@@ -2,10 +2,12 @@ import matplotlib.pyplot as plt
 import subprocess as sp
 import sys
 
+# Get last element or 0 if the list is empty
 def get_last(x):
     x_list = list(x)
     return 0 if not x_list else x_list[-1]
 
+# Args check
 if len(sys.argv) != 2:
     print("Ping target required")
     sys.exit(0)
@@ -15,14 +17,15 @@ print("ping_target = " + ping_target)
 
 ping_cmd = [ "ping", "-c", "1", ping_target ]
 
-plot_length = 30 * 60
+# Plot asthetics
+plot_length = 60
 plot_ping_fmt = "k-*"
-plot_mean_fmt = "r:+"
-plot_dropped_fmt = "b--x"
+plot_mean_fmt = "r:"
+plot_dropped_fmt = "b--."
 plot_ping_label = "RTT Ping"
 plot_mean_label = "RTT Ping Moving Average"
 plot_dropped_label = "Dropped packets"
-plot_title = "My RTT Ping to " + ping_target + " Over 30 Minutes"
+plot_title = "My RTT Ping to " + ping_target + " Over 60 Seconds"
 plot_xlabel = "Time (s)"
 plot_ylabel = "RTT Ping (ms)"
 
@@ -102,5 +105,6 @@ for i in range(0, plot_length):
     plt.draw()
     plt.pause(1)
 
+# Wait indefinitely for user to close the plot
 plt.pause(sys.maxsize)
 

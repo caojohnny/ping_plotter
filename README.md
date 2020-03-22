@@ -15,6 +15,9 @@ This utilizes Python's `subprocess` module to run the
 `ping` command several times. The results are then plotted
 in real time using `matplotlib`.
 
+Dropped packets repeat the previous time and maintain the
+same mean.
+
 # Usage
 
 ``` shell
@@ -34,6 +37,9 @@ python3-tk`) installed.
 # Caveats
 
   * Unix (macOS/Linux) only - uses the `ping` command
+  * Doesn't actually run in the plotted time, (e.g. 30
+  min plotted will probably take around 40-45 minutes
+  depending on who you are pinging)
 
 # Credits
 
