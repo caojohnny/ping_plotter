@@ -105,6 +105,13 @@ for i in range(0, plot_length):
     plt.draw()
     plt.pause(1)
 
+# Print stats
+print("")
+print("--- Statistics ---")
+print("ping count = " + str(plot_length))
+print("dropped count = " + str(get_last(dropped)))
+print("mean rtt = " + str(get_last(means)))
+
 # Wait indefinitely for user to close the plot
 plt.pause(sys.maxsize)
 
