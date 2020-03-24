@@ -16,9 +16,12 @@ if len(sys.argv) != 2:
 ping_target = sys.argv[1]
 print("ping_target = " + ping_target)
 
+
+timeout_val = 1000 if sys.platform == "darwin" else 1
+
 # 1 ping
 # 1 sec timeout
-ping_cmd = [ "ping", "-c", "1", "-W", "1", ping_target ]
+ping_cmd = [ "ping", "-c", "1", "-W", str(timeout_val), ping_target ]
 
 # Plot asthetics
 plot_length = 60
