@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import subprocess as sp
 import sys
+import time as clock
 
 # Get last element or 0 if the list is empty
 def get_last(x):
@@ -15,17 +16,21 @@ if len(sys.argv) != 2:
 ping_target = sys.argv[1]
 print("ping_target = " + ping_target)
 
-ping_cmd = [ "ping", "-c", "1", ping_target ]
+# 1 ping
+# 1 sec timeout
+ping_cmd = [ "ping", "-c", "1", "-W", "1", ping_target ]
 
 # Plot asthetics
 plot_length = 60
 plot_ping_fmt = "k-*"
 plot_mean_fmt = "r:"
+plot_jitter_fmt = "c.-"
 plot_dropped_fmt = "b--."
 plot_ping_label = "RTT Ping"
 plot_mean_label = "RTT Ping Moving Average"
+plot_jitter_label = "Jitter Moving Average"
 plot_dropped_label = "Dropped Packets"
-plot_title = "My RTT Ping to " + ping_target + " Over 60 Seconds"
+plot_title = "Ping Statistics to " + ping_target + " Plotted Over 60 Seconds"
 plot_xlabel = "Time (s)"
 plot_ylabel = "RTT Ping (ms)"
 
@@ -36,10 +41,18 @@ ping_times = []
 # Moving average
 means = []
 
+# Jitter moving average
+jitter = []
+
 # Dropped packet count
 dropped = []
 
 for i in range(0, plot_length):
+    # Take start timestamp to keep the plot interval on
+    # track
+    start_ts = clock.time();
+
+    # Add this round to the data set
     iterations.append(i)
 
     # Run the ping command
@@ -58,10 +71,12 @@ for i in range(0, plot_length):
         # ST for ping and +1 dropped
         prev_ping = get_last(ping_times)
         prev_mean = get_last(means)
+        prev_jitter = get_last(jitter)
         prev_dropped = get_last(dropped)
 
         ping_times.append(prev_ping)
         means.append(prev_mean)
+        jitter.append(prev_jitter)
         dropped.append(prev_dropped + 1)
         continue
 
@@ -76,18 +91,24 @@ for i in range(0, plot_length):
     time = float(time_str)
 
     # Add to the axis data
+    n = len(ping_times)
+    prev_ping = get_last(ping_times)
     ping_times.append(time)
 
     # Compute mean
-    n = len(means)
     prev_mean = get_last(means)
     new_mean = (prev_mean * n + time) / (n + 1)
+    means.append(new_mean)
 
+    # Compute jitter
+    prev_jitter = get_last(jitter)
+    cur_jitter = 0 if i == 0 else abs(time - prev_ping)
+    new_jitter = (prev_jitter * n + cur_jitter) / (n + 1)
+    jitter.append(new_jitter)
+
+    # Dropped packets
     prev_dropped = get_last(dropped)
     dropped.append(prev_dropped)
-
-    # Add mean to axis
-    means.append(new_mean)
 
     # Plot asthetics
     plt.clf()
@@ -100,17 +121,25 @@ for i in range(0, plot_length):
     # Plot the data
     plt.plot(iterations, ping_times, plot_ping_fmt, label = plot_ping_label)
     plt.plot(iterations, means, plot_mean_fmt, label = plot_mean_label)
+    plt.plot(iterations, jitter, plot_jitter_fmt, label = plot_jitter_label)
     plt.plot(iterations, dropped, plot_dropped_fmt, label = plot_dropped_label)
     plt.legend(loc = "upper right")
     plt.draw()
-    plt.pause(1)
+
+    stop_ts = clock.time()
+    elapsed_time = stop_ts - start_ts;
+
+    # Pause for enough time to last ~1 second for this round
+    pause_time = max(1.0 - elapsed_time, 0.00001)
+    plt.pause(pause_time)
 
 # Print stats
 print("")
 print("--- Statistics ---")
 print("ping count = " + str(plot_length))
 print("dropped count = " + str(get_last(dropped)))
-print("mean rtt = " + str(get_last(means)))
+print("mean rtt = " + str(get_last(means)) + " ms")
+print("mean jitter = " + str(get_last(jitter)) + " ms")
 
 # Wait indefinitely for user to close the plot
 plt.pause(sys.maxsize)
