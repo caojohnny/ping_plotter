@@ -26,9 +26,9 @@ cd ping_plotter
 python3 ping_plotter.py [ping_target]
 ```
 
-Requires Python 3, matplotlib (`pip3 install matplotlib`)
-and some compatible GUI toolkit like python-tk (`apt-get
-install python3-tk`) installed.
+Requires Python 3, matplotlib (`pip3 install -U
+matplotlib`) and some compatible GUI toolkit like python-tk
+(`apt-get install python3-tk`) installed.
 
 # Demo
 
