@@ -24,7 +24,7 @@ timeout_val = 1000 if sys.platform == "darwin" else 1
 ping_cmd = [ "ping", "-c", "1", "-W", str(timeout_val), ping_target ]
 
 # Plot asthetics
-plot_length = 60
+plot_length = 60 * 60
 plot_ping_fmt = "k-*"
 plot_mean_fmt = "r:"
 plot_jitter_fmt = "c.-"
@@ -33,7 +33,7 @@ plot_ping_label = "RTT Ping"
 plot_mean_label = "RTT Ping Moving Average"
 plot_jitter_label = "Jitter Moving Average"
 plot_dropped_label = "Dropped Packets"
-plot_title = "Ping Statistics to " + ping_target + " Plotted Over 60 Seconds"
+plot_title = "Ping Statistics to " + ping_target + " Plotted Over 60 Minutes"
 plot_xlabel = "Time (s)"
 plot_ylabel = "RTT Ping (ms)"
 
@@ -122,7 +122,7 @@ for i in range(0, plot_length):
     plt.grid()
 
     # Plot the data
-    plt.plot(iterations, ping_times, plot_ping_fmt, label = plot_ping_label)
+    plt.plot(iterations, ping_times, plot_ping_fmt, label = plot_ping_label, linewidth = 0.5, markersize = 5)
     plt.plot(iterations, means, plot_mean_fmt, label = plot_mean_label)
     plt.plot(iterations, jitter, plot_jitter_fmt, label = plot_jitter_label)
     plt.plot(iterations, dropped, plot_dropped_fmt, label = plot_dropped_label)
