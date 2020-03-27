@@ -24,7 +24,7 @@ timeout_val = 1000 if sys.platform == "darwin" else 1
 ping_cmd = [ "ping", "-c", "1", "-W", str(timeout_val), ping_target ]
 
 # Plot asthetics
-plot_length = 60 * 60
+plot_length = 60
 plot_ping_fmt = "k-*"
 plot_mean_fmt = "r:"
 plot_jitter_fmt = "c.-"
@@ -81,37 +81,36 @@ for i in range(0, plot_length):
         means.append(prev_mean)
         jitter.append(prev_jitter)
         dropped.append(prev_dropped + 1)
-        continue
+    else:
+        # Print component string for debugging purposes
+        print(comp)
 
-    # Print component string for debugging purposes
-    print(comp)
+        time_eq_idx = comp.rfind("=")
+        time_space_idx = comp.rfind(" ")
+        time_str = comp[time_eq_idx + 1:time_space_idx]
 
-    time_eq_idx = comp.rfind("=")
-    time_space_idx = comp.rfind(" ")
-    time_str = comp[time_eq_idx + 1:time_space_idx]
+        # Select the time and convert to a number
+        time = float(time_str)
 
-    # Select the time and convert to a number
-    time = float(time_str)
+        # Add to the axis data
+        n = len(ping_times)
+        prev_ping = get_last(ping_times)
+        ping_times.append(time)
 
-    # Add to the axis data
-    n = len(ping_times)
-    prev_ping = get_last(ping_times)
-    ping_times.append(time)
+        # Compute mean
+        prev_mean = get_last(means)
+        new_mean = (prev_mean * n + time) / (n + 1)
+        means.append(new_mean)
 
-    # Compute mean
-    prev_mean = get_last(means)
-    new_mean = (prev_mean * n + time) / (n + 1)
-    means.append(new_mean)
+        # Compute jitter
+        prev_jitter = get_last(jitter)
+        cur_jitter = 0 if i == 0 else abs(time - prev_ping)
+        new_jitter = (prev_jitter * n + cur_jitter) / (n + 1)
+        jitter.append(new_jitter)
 
-    # Compute jitter
-    prev_jitter = get_last(jitter)
-    cur_jitter = 0 if i == 0 else abs(time - prev_ping)
-    new_jitter = (prev_jitter * n + cur_jitter) / (n + 1)
-    jitter.append(new_jitter)
-
-    # Dropped packets
-    prev_dropped = get_last(dropped)
-    dropped.append(prev_dropped)
+        # Dropped packets
+        prev_dropped = get_last(dropped)
+        dropped.append(prev_dropped)
 
     # Plot asthetics
     plt.clf()
