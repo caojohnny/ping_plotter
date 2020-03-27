@@ -33,7 +33,7 @@ plot_ping_label = "RTT Ping"
 plot_mean_label = "RTT Ping Moving Average"
 plot_jitter_label = "Jitter Moving Average"
 plot_dropped_label = "Dropped Packets"
-plot_title = "Ping Statistics to " + ping_target + " Plotted Over 60 Minutes"
+plot_title = "Ping Statistics to " + ping_target + " Plotted Over 60 Seconds"
 plot_xlabel = "Time (s)"
 plot_ylabel = "RTT Ping (ms)"
 
