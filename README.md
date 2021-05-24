@@ -21,7 +21,7 @@ same mean.
 # Usage
 
 ``` shell
-git clone https://github.com/AgentTroll/ping_plotter.git
+git clone https://github.com/caojohnny/ping_plotter.git
 cd ping_plotter
 python3 ping_plotter.py [ping_target]
 ```
